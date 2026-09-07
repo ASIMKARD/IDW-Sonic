@@ -254,28 +254,29 @@ function run(){
   tabbedBtn && tabbedBtn.click();
   ok('leaving classic clears the skin', !root.hasAttribute('data-skin'));
 
-  ok('default layout = tabs', root.dataset.layout === 'tabs');
+  ok('default layout = idw', root.dataset.layout === 'tabs');
   ok('phead visible in tabs', q('#phead') && !q('#phead').hidden);
   ok('topbar hidden in tabs', q('.topbar') && q('.topbar').hidden === true);
 
-  // ---- switch to classic ----
-  const classic = segBtns.find(b => /compact/i.test(b.textContent));
+  // ---- switch to the IDW signature skin ----
+  const classic = segBtns.find(b => /^IDW$/i.test(b.textContent));
   classic && classic.click();
-  ok('click classic -> data-layout classic', root.dataset.layout === 'classic');
-  ok('classic: topbar visible', q('.topbar').hidden === false);
-  ok('classic: tabs nav hidden', q('#tabs').hidden === true);
-  ok('classic: phead hidden', q('#phead').hidden === true);
-  ok('classic: checklist visible', q('#app') && q('#app').hidden === false);
+  ok('IDW option uses the tabbed shell', root.dataset.layout === 'tabs');
+  ok('IDW option sets data-skin=emerald', root.dataset.skin === 'emerald');
+  ok('IDW skin hides the topbar (tabbed shell)', q('.topbar').hidden === true);
+  ok('IDW skin keeps the tab nav', q('#tabs').hidden === false);
+  ok('IDW skin keeps the progress header', q('#phead').hidden === false);
+  ok('IDW skin: checklist visible', q('#app') && q('#app').hidden === false);
 
-  // ---- classic: open settings via the gear, then switch back ----
+  // ---- IDW skin: open settings via the tab, then switch back ----
   const gear = q('#setBtn');
-  ok('classic: gear button exists', !!gear);
-  gear && gear.click();
-  ok('classic: gear opens settings', q('#panel').hidden === false);
-  ok('classic: gear aria-expanded true', gear && gear.getAttribute('aria-expanded') === 'true');
+  ok('IDW skin hides the gear (tabs replace it)', !gear || gear.hidden === true);
+  q('#tabSettings') && q('#tabSettings').click();
+  ok('IDW skin: Settings tab opens the pane', q('#panel').hidden === false);
+  ok('IDW skin keeps the tab nav visible', q('#tabs').hidden === false);
   const tabbed = segBtns.find(b => /tabbed/i.test(b.textContent));
   tabbed && tabbed.click();
-  ok('classic -> tabbed via seg works', root.dataset.layout === 'tabs');
+  ok('IDW -> tabbed via seg works', root.dataset.layout === 'tabs' && !root.hasAttribute('data-skin'));
   ok('tabs: gear hidden again', q('#setBtn').hidden === true);
 
   // ---- walk the tabs ----

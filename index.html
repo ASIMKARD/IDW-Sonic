@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 5</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 6</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -180,7 +180,7 @@
   var ALLSTRANDS = D.strands.length ? (1 << D.strands.length) - 1 : 1; // never 0: a 0 mask makes matches() reject every row
   var state = {
     progress: {},
-    settings: { theme: 'default', eraScheme: 'split', cloneOrder: 'epic', viewOrder: 'reading', layout: 'tabs', lv: 2, tab: 'app', collapsed: [], pcollapsed: [] },
+    settings: { theme: 'default', eraScheme: 'split', cloneOrder: 'epic', viewOrder: 'reading', layout: 'idw', lv: 2, tab: 'app', collapsed: [], pcollapsed: [] },
     filters: { depth: 'everything', types: D.types.slice(), strands: ALLSTRANDS, sv: D.strands.length, mo: ['M','O'], annuals: true,
                unreadOnly: false, alt: true, q: '' }
   };
@@ -939,10 +939,11 @@
 
   function applyLayout() {
     var lay = state.settings.layout;
-    var tabs = (lay === 'tabs' || lay === 'pull');
+    var tabs = (lay === 'tabs' || lay === 'pull' || lay === 'idw');
     document.documentElement.dataset.layout = tabs ? 'tabs' : 'classic';
     // 'pull' is the X-Men Pull List look: same tab structure, different skin
     if (lay === 'pull') document.documentElement.dataset.skin = 'pull';
+    else if (lay === 'idw') document.documentElement.dataset.skin = 'emerald';
     else document.documentElement.removeAttribute('data-skin');
     document.getElementById('tabs').hidden = !tabs;
     document.getElementById('phead').hidden = !tabs;
@@ -1083,7 +1084,7 @@
 
   function buildSettingsUI() {
     seg(document.getElementById('segLayout'),
-      [['compact', 'compact'], ['tabs', 'tabbed'], ['pull', 'classic']],
+      [['idw', 'IDW'], ['tabs', 'tabbed'], ['pull', 'classic']],
       function () { return state.settings.layout; },
       function (v) {
         state.settings.layout = v;
