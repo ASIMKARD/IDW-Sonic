@@ -139,6 +139,19 @@ function run(){
        const bv = (tag.match(/(\d+)/) || [])[1];
        return cv && bv && cv === bv;
      })());
+  ok('emerald ramp text clears WCAG AA on its dark surface', (function () {
+       const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
+       const m = css.match(/html:root\[data-skin="emerald"\]\{([^}]*)\}/);
+       if (!m) return false;
+       const surf = (m[1].match(/--surface:(#[0-9A-Fa-f]{6})/) || [])[1];
+       const lum = h => { const c = [1,3,5].map(i => parseInt(h.substr(i,2),16)/255)
+           .map(x => x <= 0.03928 ? x/12.92 : Math.pow((x+0.055)/1.055, 2.4));
+         return 0.2126*c[0] + 0.7152*c[1] + 0.0722*c[2]; };
+       const cr = (a,b) => { const A = lum(a), B = lum(b);
+         return (Math.max(A,B)+0.05) / (Math.min(A,B)+0.05); };
+       const cols = m[1].match(/--e\d+-[ad]:(#[0-9A-Fa-f]{6})/g) || [];
+       return cols.length > 0 && cols.every(c => cr(c.split(':')[1], surf) >= 4.5);
+     })());
   ok('depth chips built', qa('#depthChips .chip').length === 3);
   ok('progress mode seg has 2 options', qa('#segProgress button').length === 2);
   ok('refresh reminder seg has 4 options incl. off', qa('#segRefresh button').length === 4);

@@ -1,6 +1,6 @@
 // Offline service worker.
 // EDIT ON EVERY DEPLOY: bump CACHE, or the browser keeps serving the old shell.
-const CACHE = 'idw-sonic-v6';
+const CACHE = 'idw-sonic-v7';
 
 const ASSETS = ['./', './index.html', './styles.css', './data.js', './qrcode.js', './manifest.json',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable.png'];
