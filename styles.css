@@ -16,7 +16,7 @@ body{margin:0;background:var(--bg);color:var(--ink);
  font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:var(--fs);line-height:1.45;
  -webkit-font-smoothing:antialiased}
 :root{
- --fs:15px; --dens:9px; --radius:6px;
+ --fs:15.5px; --dens:13px; --radius:6px;
  --mark:'IBM Plex Mono',ui-monospace,monospace;
 
  --bg:#F4F1EA;--surface:#FFFFFF;--ink:#0E1526;--ink-soft:#4A5568;
@@ -111,13 +111,15 @@ main{max-width:960px;margin:0 auto;padding:0 0 40vh}
 .row[data-s="skip"] .mark{color:var(--ink-soft);opacity:.55}
 .row[data-s="read"] .title,.row[data-s="skip"] .title{opacity:.55}
 .row[data-s="skip"] .title{text-decoration:line-through}
-.title{font-weight:500;flex:0 1 auto;min-width:0;overflow-wrap:anywhere}
-.arclab{font-size:12.5px;color:var(--ink-soft);flex:1;min-width:0;overflow:hidden;
+.title{font-weight:500;font-size:15.5px;flex:0 1 auto;min-width:0;overflow-wrap:anywhere}
+.arclab{font-size:13px;color:var(--ink-soft);flex:1;min-width:0;overflow:hidden;
  text-overflow:ellipsis;white-space:nowrap}
 .badges{display:flex;gap:5px;align-items:center;flex:0 1 auto;flex-wrap:wrap;min-width:0}
-.b{font-family:var(--mark);font-size:10.5px;padding:1px 6px;border-radius:3px;white-space:nowrap;
+.b{font-family:var(--mark);font-size:11.5px;padding:3px 7px;border-radius:3px;white-space:nowrap;
  border:1px solid transparent;background:none;cursor:default;color:var(--ink-soft)}
 .b.core{background:var(--accent);color:#fff;font-weight:500}
+.b.note,.b.bm,.b.mu{min-height:38px;min-width:38px;padding:0 11px;font-size:13px;
+ display:inline-flex;align-items:center;justify-content:center}
 .b.note{border-color:var(--acc);color:var(--deep);cursor:pointer}
 .b.mu{border-color:var(--rule);color:var(--action);text-decoration:none;background:var(--surface)}
 .b.mu:hover{border-color:var(--action)}
@@ -147,7 +149,7 @@ main{max-width:960px;margin:0 auto;padding:0 0 40vh}
 .frow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .flabel{font-family:var(--mark);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
  color:var(--ink-soft);flex:none;width:62px}
-.chip{font:inherit;font-size:13.5px;padding:8px 14px;min-height:40px;display:inline-flex;align-items:center;border-radius:999px;border:1px solid var(--rule);
+.chip{font:inherit;font-size:12.5px;padding:3px 10px;border-radius:999px;border:1px solid var(--rule);
  background:var(--surface);color:var(--ink-soft);cursor:pointer;white-space:nowrap}
 .chip[aria-pressed="true"]{background:var(--action);border-color:var(--action);color:#fff}
 .chip.strand[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
@@ -155,8 +157,8 @@ main{max-width:960px;margin:0 auto;padding:0 0 40vh}
 .search{flex:1;min-width:140px;font:inherit;font-size:13.5px;padding:5px 10px;border-radius:var(--radius);
  border:1px solid var(--rule);background:var(--bg);color:var(--ink)}
 .search::placeholder{color:var(--ink-soft)}
-.linkbtn{background:none;border:0;font:inherit;font-size:13.5px;color:var(--action);cursor:pointer;
- text-decoration:underline;padding:9px 10px;min-height:40px}
+.linkbtn{background:none;border:0;font:inherit;font-size:12px;color:var(--action);cursor:pointer;
+ text-decoration:underline;padding:2px 4px}
 .tally{font-family:var(--mark);font-size:11.5px;color:var(--ink-soft);margin-left:auto}
 .empty{padding:30px 14px;color:var(--ink-soft);font-style:italic}
 .arc[hidden],.era[hidden],.row[hidden]{display:none}
@@ -166,7 +168,7 @@ mark{background:var(--accent);color:#fff;border-radius:2px;padding:0 2px}
  padding:10px 14px;display:grid;gap:9px;max-height:70vh;overflow:auto}
 .panel[hidden]{display:none}
 .seg{display:flex;gap:0;border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden}
-.seg button{font:inherit;font-size:13.5px;padding:10px 15px;min-height:40px;border:0;border-right:1px solid var(--rule);
+.seg button{font:inherit;font-size:12.5px;padding:4px 11px;border:0;border-right:1px solid var(--rule);
  background:var(--surface);color:var(--ink-soft);cursor:pointer}
 .seg button:last-child{border-right:0}
 .seg button[aria-pressed="true"]{background:var(--action);color:#fff}
@@ -190,9 +192,10 @@ mark{background:var(--accent);color:#fff;border-radius:2px;padding:0 2px}
 /* variants */
 :root[data-dys="1"] body,:root[data-dys="1"] .search,:root[data-dys="1"] textarea{
  font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;letter-spacing:.02em;word-spacing:.08em}
-:root[data-tap="1"] .mark{width:52px;min-height:52px;font-size:22px}
-:root[data-tap="1"] .chip,:root[data-tap="1"] .seg button{padding-top:13px;padding-bottom:13px;min-height:50px;font-size:14.5px}
-:root[data-tap="1"] .linkbtn,:root[data-tap="1"] .rlink{min-height:50px;font-size:15px}
+:root[data-tap="1"] .mark{width:48px;min-height:48px;font-size:21px}
+:root[data-tap="1"] .b.note,:root[data-tap="1"] .b.bm,:root[data-tap="1"] .b.mu{min-height:46px;min-width:46px;font-size:14px}
+:root[data-tap="1"] .row{--dens:17px}
+:root[data-tap="1"] .chip,:root[data-tap="1"] .seg button{padding-top:8px;padding-bottom:8px}
 :root[data-badges="0"] .badges{display:none}
 :root[data-table="1"] .blurb,:root[data-table="1"] .era-intro{display:none}
 :root[data-table="1"] .row{--dens:3px;font-size:13px}
@@ -320,7 +323,7 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
 .rbtn.ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--ink)}
 .rbtn.solid{background:var(--ink);color:var(--surface);border:1.5px solid var(--ink)}
 .rnav{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-.rlink{background:none;border:0;font:inherit;font-size:14.5px;min-height:44px;padding:10px 12px;color:var(--ink);
+.rlink{background:none;border:0;font:inherit;font-size:13.5px;color:var(--ink);
   cursor:pointer;padding:6px 2px}
 .rlink:disabled{opacity:.35;cursor:default}
 
@@ -359,7 +362,7 @@ img,svg,pre,table{max-width:100%}
    and then remembers the real one, keeping the scrollbar stable. Browsers
    without support simply ignore these lines. */
 .row,.arc-head,.era-head,.blurb{content-visibility:auto}
-.row{contain-intrinsic-size:auto 46px}
+.row{contain-intrinsic-size:auto 62px}
 .arc-head{contain-intrinsic-size:auto 42px}
 .era-head{contain-intrinsic-size:auto 46px}
 .blurb{contain-intrinsic-size:auto 96px}
