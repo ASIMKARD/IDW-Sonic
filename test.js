@@ -152,6 +152,17 @@ function run(){
        const cols = m[1].match(/--e\d+-[ad]:(#[0-9A-Fa-f]{6})/g) || [];
        return cols.length > 0 && cols.every(c => cr(c.split(':')[1], surf) >= 4.5);
      })());
+  ok('emerald era ramp is flat (one colour, no per-era cycling)', (function () {
+       const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
+       const m = css.match(/html:root\[data-skin="emerald"\]\{([^}]*)\}/);
+       if (!m) return false;
+       const acc = (m[1].match(/--e\d+-a:(#[0-9A-Fa-f]{6})/g) || []).map(s => s.split(':')[1]);
+       return acc.length > 1 && new Set(acc).size === 1;
+     })());
+  ok('emerald filter chips have a visible border', (function () {
+       const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
+       return /html:root\[data-skin="emerald"\] \.chip\{[^}]*border:1\.5px/.test(css);
+     })());
   ok('review button is targetable by class', !!q('.row .b.rv'));
   ok('button size seg has 3 options', qa('#segTap button').length === 3);
   ok('button size defaults to standard', (q('#segTap button[aria-pressed="true"]') || {}).textContent === 'standard');
