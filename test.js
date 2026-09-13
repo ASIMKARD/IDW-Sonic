@@ -153,6 +153,12 @@ function run(){
        return cols.length > 0 && cols.every(c => cr(c.split(':')[1], surf) >= 4.5);
      })());
   ok('review button is targetable by class', !!q('.row .b.rv'));
+  ok('button size seg has 3 options', qa('#segTap button').length === 3);
+  ok('button size defaults to standard', (q('#segTap button[aria-pressed="true"]') || {}).textContent === 'standard');
+  ok('compact size restores the original 26px mark', (function () {
+       const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
+       return /:root\[data-tap="compact"\] \.mark\{width:26px/.test(css);
+     })());
   ok('glyph buttons meet the 40px touch minimum', (function () {
        const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
        const m = css.match(/\.b\.note,\.b\.bm,\.b\.rv,\.b\.mu\{[^}]*min-height:(\d+)px/);

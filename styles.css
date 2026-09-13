@@ -196,11 +196,16 @@ mark{background:var(--accent);color:#fff;border-radius:2px;padding:0 2px}
 /* variants */
 :root[data-dys="1"] body,:root[data-dys="1"] .search,:root[data-dys="1"] textarea{
  font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;letter-spacing:.02em;word-spacing:.08em}
-:root[data-tap="1"] .mark{width:48px;min-height:48px;font-size:21px}
-:root[data-tap="1"] .b.note,:root[data-tap="1"] .b.bm,:root[data-tap="1"] .b.rv,:root[data-tap="1"] .b.mu{min-height:48px;min-width:48px}
-:root[data-tap="1"] .b.bm,:root[data-tap="1"] .b.rv{font-size:22px}
-:root[data-tap="1"] .row{--dens:17px}
-:root[data-tap="1"] .chip,:root[data-tap="1"] .seg button{padding-top:8px;padding-bottom:8px}
+/* ---- button size: compact / standard / large (checklist controls) ---- */
+:root[data-tap="compact"] .mark{width:26px;min-height:26px;font-size:16px}
+:root[data-tap="compact"] .b.note,:root[data-tap="compact"] .b.bm,:root[data-tap="compact"] .b.rv,:root[data-tap="compact"] .b.mu{min-height:0;min-width:0;padding:1px 6px;font-size:10.5px}
+:root[data-tap="compact"] .b.bm,:root[data-tap="compact"] .b.rv{background:none;border-color:transparent;font-size:12px}
+:root[data-tap="compact"] .row{--dens:9px}
+:root[data-tap="large"] .mark{width:48px;min-height:48px;font-size:21px}
+:root[data-tap="large"] .b.note,:root[data-tap="large"] .b.bm,:root[data-tap="large"] .b.rv,:root[data-tap="large"] .b.mu{min-height:48px;min-width:48px}
+:root[data-tap="large"] .b.bm,:root[data-tap="large"] .b.rv{font-size:22px}
+:root[data-tap="large"] .row{--dens:17px}
+
 :root[data-badges="0"] .badges{display:none}
 :root[data-table="1"] .blurb,:root[data-table="1"] .era-intro{display:none}
 :root[data-table="1"] .row{--dens:3px;font-size:13px}

@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 10</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 11</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -89,7 +89,7 @@
     <button class="chip" id="tableChip" type="button" aria-pressed="false">Table view</button>
     <button class="chip" id="badgeChip" type="button" aria-pressed="true">Badges</button>
     <button class="chip" id="dysChip" type="button" aria-pressed="false">Dyslexia font</button>
-    <button class="chip" id="tapChip" type="button" aria-pressed="false">Large tap targets</button>
+
     <button class="chip" id="miniChip" type="button" aria-pressed="true">Mini progress bar</button>
     <button class="chip" id="comboChip" type="button" aria-pressed="false">Combo badge</button>
     <button class="chip" id="revChip" type="button" aria-pressed="false">Newest era first</button></div>
@@ -103,6 +103,7 @@
   <div class="frow"><span class="flabel">Pace</span><span class="seg" id="segPace"></span>
     <span class="pace" id="paceOut">—</span></div>
   <div class="frow"><span class="flabel">Progress</span><span class="seg" id="segProgress"></span></div>
+  <div class="frow"><span class="flabel">Button size</span><span class="seg" id="segTap"></span></div>
   <div class="frow"><span class="flabel">Refresh reminder</span><span class="seg" id="segRefresh"></span></div>
 
   <h3 class="shead">Touch controls</h3>
@@ -193,7 +194,7 @@
   };
   var PACE = [['light', 5], ['steady', 12], ['heavy', 25], ['marathon', 50]];
   var view = { density: 'normal', font: 'md', mark: 'box', table: false, badges: true,
-               dys: false, tap: true, mini: true, pace: 12, presets: [],
+               dys: false, tap: 'standard', mini: true, pace: 12, presets: [],
                combo: false, rev: false, hideSkip: false, notesOnly: false,
                reveal: false, auto: false, swipe: false, press: false, bg: 0 };
   var reviews = {}, bookmarks = [];
@@ -846,7 +847,7 @@
     r.dataset.table = view.table ? '1' : '0';
     r.dataset.badges = view.badges ? '1' : '0';
     r.dataset.dys = view.dys ? '1' : '0';
-    r.dataset.tap = view.tap ? '1' : '0';
+    r.dataset.tap = view.tap || 'standard';
     r.dataset.combo = view.combo ? '1' : '0';
     r.dataset.reveal = view.reveal ? '1' : '0';
     r.dataset.bg = String(view.bg || 0);
@@ -1108,6 +1109,13 @@
       [['split', 'red + blue'], ['mono', 'all red']],
       function () { return state.settings.eraScheme; },
       function (v) { state.settings.eraScheme = v; document.documentElement.dataset.erascheme = v; save(K.settings, state.settings); });
+    /* Button size: compact is the original template sizing, standard meets the
+       40px touch minimum, large goes to 48px. Checklist controls only. */
+    seg(document.getElementById('segTap'),
+      [['compact', 'compact'], ['standard', 'standard'], ['large', 'large']],
+      function () { return state.settings.tap || 'standard'; },
+      function (v) { state.settings.tap = v; save(K.settings, state.settings);
+                     document.documentElement.dataset.tap = v; });
     seg(document.getElementById('segProgress'),
       [['shared', 'combined'], ['split', 'per medium']],
       function () { return state.settings.progressMode || 'shared'; },
@@ -1124,7 +1132,7 @@
 
     // pure display toggles: flip the flag, repaint, done
     [['tableChip', 'table'], ['badgeChip', 'badges'], ['dysChip', 'dys'],
-     ['tapChip', 'tap'], ['miniChip', 'mini'], ['comboChip', 'combo'],
+     ['miniChip', 'mini'], ['comboChip', 'combo'],
      ['revealChip', 'reveal']].forEach(function (pair) {
       var b = document.getElementById(pair[0]);
       if (!b) return;
