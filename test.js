@@ -152,6 +152,12 @@ function run(){
        const cols = m[1].match(/--e\d+-[ad]:(#[0-9A-Fa-f]{6})/g) || [];
        return cols.length > 0 && cols.every(c => cr(c.split(':')[1], surf) >= 4.5);
      })());
+  ok('review button is targetable by class', !!q('.row .b.rv'));
+  ok('glyph buttons meet the 40px touch minimum', (function () {
+       const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
+       const m = css.match(/\.b\.note,\.b\.bm,\.b\.rv,\.b\.mu\{[^}]*min-height:(\d+)px/);
+       return m && parseInt(m[1], 10) >= 40;
+     })());
   ok('depth chips built', qa('#depthChips .chip').length === 3);
   ok('progress mode seg has 2 options', qa('#segProgress button').length === 2);
   ok('refresh reminder seg has 4 options incl. off', qa('#segRefresh button').length === 4);

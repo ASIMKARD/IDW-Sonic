@@ -118,8 +118,12 @@ main{max-width:960px;margin:0 auto;padding:0 0 40vh}
 .b{font-family:var(--mark);font-size:11.5px;padding:3px 7px;border-radius:3px;white-space:nowrap;
  border:1px solid transparent;background:none;cursor:default;color:var(--ink-soft)}
 .b.core{background:var(--accent);color:#fff;font-weight:500}
-.b.note,.b.bm,.b.mu{min-height:38px;min-width:38px;padding:0 11px;font-size:13px;
+.b.note,.b.bm,.b.rv,.b.mu{min-height:40px;min-width:40px;padding:0 11px;
  display:inline-flex;align-items:center;justify-content:center}
+/* the glyph buttons need a visible box, or a 40px tap area reads as a tiny icon */
+.b.bm,.b.rv{font-size:19px;line-height:1;border-color:var(--rule);background:var(--surface);color:var(--ink-soft)}
+.b.bm:hover,.b.rv:hover{border-color:var(--action);color:var(--action)}
+.b.note,.b.mu{font-size:13px}
 .b.note{border-color:var(--acc);color:var(--deep);cursor:pointer}
 .b.mu{border-color:var(--rule);color:var(--action);text-decoration:none;background:var(--surface)}
 .b.mu:hover{border-color:var(--action)}
@@ -193,7 +197,8 @@ mark{background:var(--accent);color:#fff;border-radius:2px;padding:0 2px}
 :root[data-dys="1"] body,:root[data-dys="1"] .search,:root[data-dys="1"] textarea{
  font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;letter-spacing:.02em;word-spacing:.08em}
 :root[data-tap="1"] .mark{width:48px;min-height:48px;font-size:21px}
-:root[data-tap="1"] .b.note,:root[data-tap="1"] .b.bm,:root[data-tap="1"] .b.mu{min-height:46px;min-width:46px;font-size:14px}
+:root[data-tap="1"] .b.note,:root[data-tap="1"] .b.bm,:root[data-tap="1"] .b.rv,:root[data-tap="1"] .b.mu{min-height:48px;min-width:48px}
+:root[data-tap="1"] .b.bm,:root[data-tap="1"] .b.rv{font-size:22px}
 :root[data-tap="1"] .row{--dens:17px}
 :root[data-tap="1"] .chip,:root[data-tap="1"] .seg button{padding-top:8px;padding-bottom:8px}
 :root[data-badges="0"] .badges{display:none}
