@@ -163,6 +163,22 @@ function run(){
        const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
        return /html:root\[data-skin="emerald"\] \.chip\{[^}]*border:1\.5px/.test(css);
      })());
+  ok('filters survive a round trip through Reading', (function () {
+       const tabs = qa('#tabs .tab');
+       const go = p => { const t = tabs.find(x => x.dataset.pane === p); t && t.click(); };
+       go('paneReading'); go('app');
+       return q('#filters').hidden === false;
+     })());
+  ok('isTabbed covers every non-classic layout', (function () {
+       const h = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
+       return /return l !== 'classic';/.test(h);
+     })());
+  ok('persistent banner toggle exists', !!q('#bannerChip'));
+  ok('persistent banner is off by default', q('#banner').hidden === true);
+  ok('reading tab labels vary by medium', (function () {
+       const h = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
+       return /SCREEN_LABEL/.test(h) && /doneVerb/.test(h) && /Mark Watched/.test(h);
+     })());
   ok('review button is targetable by class', !!q('.row .b.rv'));
   ok('button size seg has 3 options', qa('#segTap button').length === 3);
   ok('button size defaults to standard', (q('#segTap button[aria-pressed="true"]') || {}).textContent === 'standard');
@@ -182,8 +198,8 @@ function run(){
      qa('#segRefresh button').some(b => /off/i.test(b.textContent)));
   ok('type chips built', qa('#typeChips .chip').length === D.types.length);
   ok('mandatory/optional chips', qa('#moChips .chip').length === 2);
-  ok('format row has annuals + one chip per medium',
-     qa('#fmtChips .chip').length === 1 + (D.media ? D.media.length : 0));
+  ok('format row has one chip per medium', qa('#fmtChips .chip').length === (D.media ? D.media.length : 0));
+  ok('no redundant Annuals chip', !qa('#fmtChips .chip').some(b => /annual/i.test(b.textContent)));
   ok('media chips are labelled Comics/Games/Shows',
      ['Comics','Games','Shows'].every(n => qa('#fmtChips .chip').some(b => b.textContent.indexOf(n) !== -1)));
   ok('every issue has a medium', (D.issueMedium||[]).length === D.issues.length);
@@ -325,11 +341,11 @@ function run(){
     console.log('   #rdr exists =', !!q('#rdr'));
   }
   const before = Object.keys(JSON.parse(dom.window.localStorage.getItem(((D.franchise && D.franchise.key) || 'tracker') + ':v1:progress') || '{"p":{}}').p || {}).length;
-  const mark = qa('#paneReading .rbtn').find(b => /read/i.test(b.textContent));
+  const mark = q('#paneReading .rbtn.solid');   // label varies by medium: Read / Beaten / Watched
   mark && mark.click();
   setTimeout(() => {
     const after = Object.keys(JSON.parse(dom.window.localStorage.getItem(((D.franchise && D.franchise.key) || 'tracker') + ':v1:progress') || '{"p":{}}').p || {}).length;
-    ok('Mark Read persisted a mark', after === before + 1);
+    ok('the done button persists a mark (label varies by medium)', after === before + 1);
     if (after !== before + 1) {
       console.log('   button found =', !!mark, '| label =', mark && mark.textContent);
       console.log('   ls keys =', JSON.stringify(Object.keys(dom.window.localStorage)));

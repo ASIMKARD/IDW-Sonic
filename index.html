@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 12</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 13</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -91,6 +91,7 @@
     <button class="chip" id="dysChip" type="button" aria-pressed="false">Dyslexia font</button>
 
     <button class="chip" id="miniChip" type="button" aria-pressed="true">Mini progress bar</button>
+    <button class="chip" id="bannerChip" type="button" aria-pressed="false">Persistent banner</button>
     <button class="chip" id="comboChip" type="button" aria-pressed="false">Combo badge</button>
     <button class="chip" id="revChip" type="button" aria-pressed="false">Newest era first</button></div>
 
@@ -137,6 +138,7 @@
   <div id="aboutBox" hidden style="font-size:13px;max-width:78ch;color:var(--ink-soft)"></div>
 </section>
 <div class="mini" id="mini"><i style="width:0%"></i></div>
+<div class="banner" id="banner" hidden aria-label="Progress"></div>
 
 <div class="toast" id="toast" hidden role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastAct" type="button" hidden></button></div>
 
@@ -170,8 +172,21 @@
   (D.issues || []).forEach(function (r, i) { MEDIDX[r[0]] = (D.issueMedium || [])[i] || 0; });
   function medOf(it) { return MEDIA[MEDIDX[it[0]] || 0] || 'comic'; }
   var MEDIA_ICON = { comic: '\u25A4', game: '\u{1F3AE}', screen: '\u25B6' };
-  var GAME_LABEL = { unread: 'Not started', reading: 'Playing', read: 'Beaten', skip: 'Skipped' };
-  function labelFor(it, st) { return medOf(it) === 'game' ? GAME_LABEL[st] : LABEL[st]; }
+  var GAME_LABEL   = { unread: 'Not started', reading: 'Playing', read: 'Beaten',   skip: 'Skipped' };
+  var SCREEN_LABEL = { unread: 'Unwatched',    reading: 'Watching', read: 'Watched', skip: 'Skipped' };
+  function labelFor(it, st) {
+    var m = medOf(it);
+    return m === 'game' ? GAME_LABEL[st] : (m === 'screen' ? SCREEN_LABEL[st] : LABEL[st]);
+  }
+  /* verb used on the Reading tab's action button, per medium */
+  function doneVerb(it) {
+    var m = medOf(it);
+    return m === 'game' ? 'Beaten' : (m === 'screen' ? 'Watched' : 'Read');
+  }
+  function doneAction(it) {
+    var m = medOf(it);
+    return m === 'game' ? 'Mark Beaten' : (m === 'screen' ? 'Mark Watched' : 'Mark Read');
+  }
   /* Storage keys are namespaced per franchise. Every tracker on the same
      GitHub Pages account shares one localStorage origin, so a hardcoded
      prefix would let a new tracker overwrite an existing one's progress. */
@@ -194,7 +209,7 @@
   };
   var PACE = [['light', 5], ['steady', 12], ['heavy', 25], ['marathon', 50]];
   var view = { density: 'normal', font: 'md', mark: 'box', table: false, badges: true,
-               dys: false, tap: 'standard', mini: true, pace: 12, presets: [],
+               dys: false, tap: 'standard', mini: true, banner: false, pace: 12, presets: [],
                combo: false, rev: false, hideSkip: false, notesOnly: false,
                reveal: false, auto: false, swipe: false, press: false, bg: 0 };
   var reviews = {}, bookmarks = [];
@@ -655,7 +670,6 @@
     });
 
     var fWrap = document.getElementById('fmtChips');
-    fWrap.appendChild(chip('Annuals', f.annuals !== false, function (on) { f.annuals = on; }));
     /* Three independent media toggles, composable like the other chips rather
        than a single mode picker. */
     if (D.media && D.media.length > 1) {
@@ -756,6 +770,12 @@
       applyFilters();
     });
 
+    var bc = document.getElementById('bannerChip');
+    if (bc) bc.addEventListener('click', function () {
+      state.settings.banner = !state.settings.banner;
+      bc.setAttribute('aria-pressed', state.settings.banner ? 'true' : 'false');
+      save(K.settings, state.settings); paintBanner();
+    });
     var fb = document.getElementById('filterBtn');
     fb.addEventListener('click', function () {
       var bar = document.getElementById('filters');
@@ -887,6 +907,29 @@
   function paintMini() {
     var c = counts(), m = document.getElementById('mini');
     if (m && m.firstElementChild) m.firstElementChild.style.width = (c.total ? c.done / c.total * 100 : 0) + '%';
+    paintBanner();
+  }
+  /* Persistent banner: one compact line, always on screen. In 'split' progress
+     mode it shows a bar per medium; otherwise a single overall bar. */
+  function paintBanner() {
+    var b = document.getElementById('banner');
+    if (!b) return;
+    b.hidden = !state.settings.banner;
+    if (b.hidden) return;
+    var split = (state.settings.progressMode || 'shared') === 'split';
+    var sets = split ? countsByMedium().filter(function (c) { return c.total; })
+                     : [(function () { var c = counts(); c.medium = null; return c; })()];
+    b.innerHTML = '';
+    sets.forEach(function (c) {
+      var pc = c.total ? Math.round(c.done / c.total * 100) : 0;
+      var cell = el('span', 'bcell');
+      if (c.medium) cell.appendChild(el('span', 'bico', MEDIA_ICON[c.medium]));
+      var bar = el('span', 'bbar'); var fill = el('i', ''); fill.style.width = pc + '%';
+      bar.appendChild(fill); cell.appendChild(bar);
+      cell.appendChild(el('span', 'bpct', pc + '%'));
+      cell.title = (c.medium || 'overall') + ': ' + c.done + ' of ' + c.total;
+      b.appendChild(cell);
+    });
   }
 
   /* ---------- layout shell: 'classic' (settings dropdown) or 'tabs' (X-Men style) ---------- */
@@ -922,7 +965,9 @@
 
   function isTabbed() {
     var l = state.settings.layout;
-    return l === 'tabs' || l === 'pull';
+    // every shell except the legacy 'classic' one is tabbed. Listing the tabbed
+    // values meant adding a layout silently broke this; invert the test instead.
+    return l !== 'classic';
   }
 
   // The skin is pure CSS. If styles.css on the server predates v16 the rules
@@ -1043,7 +1088,7 @@
     var skip = el('button', 'rbtn ghost', st === 'skip' ? 'Skipped' : 'Skip');
     skip.type = 'button';
     skip.addEventListener('click', function () { setRdr(it, st === 'skip' ? 'unread' : 'skip'); });
-    var read = el('button', 'rbtn solid', st === 'read' ? 'Read \u2713' : 'Mark Read');
+    var read = el('button', 'rbtn solid', st === 'read' ? doneVerb(it) + ' \u2713' : doneAction(it));
     read.type = 'button';
     read.addEventListener('click', function () { setRdr(it, st === 'read' ? 'unread' : 'read'); });
     acts.appendChild(skip); acts.appendChild(read); host.appendChild(acts);
@@ -1119,7 +1164,7 @@
     seg(document.getElementById('segProgress'),
       [['shared', 'combined'], ['split', 'per medium']],
       function () { return state.settings.progressMode || 'shared'; },
-      function (v) { state.settings.progressMode = v; save(K.settings, state.settings); paintProgress(); });
+      function (v) { state.settings.progressMode = v; save(K.settings, state.settings); paintProgress(); paintBanner(); });
     /* This is a live, still-publishing franchise, so the refresh reminder is a
        first-class setting rather than an afterthought. 'off' is available. */
     seg(document.getElementById('segRefresh'),

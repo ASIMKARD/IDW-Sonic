@@ -630,3 +630,18 @@ html:root[data-skin="emerald"] .seg button[aria-pressed="true"]{background:var(-
 html:root[data-skin="emerald"] .flabel{color:#CFE7DB}
 html:root[data-skin="emerald"] select,html:root[data-skin="emerald"] #search{border:1.5px solid #4A8570}
 html:root[data-skin="emerald"] .chip[aria-pressed="false"]{color:#A9CCBC}
+
+/* ---------- persistent banner: one sticky line, X-Men-plain ---------- */
+.banner{position:sticky;top:0;z-index:30;display:flex;gap:16px;align-items:center;
+ padding:6px 14px;background:var(--surface);border-bottom:1px solid var(--rule);
+ font-family:var(--mark);font-size:11.5px;color:var(--ink-soft)}
+.banner[hidden]{display:none}
+.bcell{display:flex;align-items:center;gap:6px;flex:1 1 0;min-width:0}
+.bico{flex:none;font-size:12px}
+.bbar{flex:1 1 auto;height:4px;min-width:24px;background:var(--rule);border-radius:2px;overflow:hidden}
+.bbar i{display:block;height:100%;background:var(--action)}
+.bpct{flex:none;min-width:30px;text-align:right;font-variant-numeric:tabular-nums}
+:root[data-layout="tabs"] .banner{top:var(--hud-h)}
+html:root[data-skin="emerald"] .banner{background:#0B1713;border-bottom-color:#2E5B4B;color:#A9CCBC}
+html:root[data-skin="emerald"] .bbar{background:#1E3A30}
+html:root[data-skin="emerald"] .bbar i{background:var(--accent)}
