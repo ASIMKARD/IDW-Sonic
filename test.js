@@ -173,6 +173,12 @@ function run(){
        const h = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
        return /return l !== 'classic';/.test(h);
      })());
+  ok('paper + era-hue controls hidden on the IDW skin',
+     q('#paperRow').hidden === true && q('#eraHueWrap').hidden === true);
+  ok('refresh interval is actually consumed, not just stored', (function () {
+       const h = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
+       return /function refreshDue/.test(h) && /REFRESH_DAYS/.test(h) && /setTimeout\(checkRefresh/.test(h);
+     })());
   ok('persistent banner toggle exists', !!q('#bannerChip'));
   ok('persistent banner is off by default', q('#banner').hidden === true);
   ok('reading tab labels vary by medium', (function () {

@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 13</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 14</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -82,9 +82,9 @@
   <div class="frow"><span class="flabel">Layout</span><span class="seg" id="segLayout"></span></div>
   <div class="frow"><span class="flabel">Density</span><span class="seg" id="segDensity"></span>
     <span class="flabel" style="width:auto">Text</span><span class="seg" id="segFont"></span></div>
-  <div class="frow"><span class="flabel">Paper</span><span class="swatches" id="bgRow"></span></div>
+  <div class="frow" id="paperRow"><span class="flabel">Paper</span><span class="swatches" id="bgRow"></span></div>
   <div class="frow"><span class="flabel">Marks</span><span class="seg" id="segMark"></span>
-    <span class="flabel" style="width:auto">Era hues</span><span class="seg" id="segEraScheme"></span></div>
+    <span id="eraHueWrap"><span class="flabel" style="width:auto">Era hues</span><span class="seg" id="segEraScheme"></span></span></div>
   <div class="frow"><span class="flabel">View</span>
     <button class="chip" id="tableChip" type="button" aria-pressed="false">Table view</button>
     <button class="chip" id="badgeChip" type="button" aria-pressed="true">Badges</button>
@@ -991,6 +991,13 @@
     if (lay === 'pull') document.documentElement.dataset.skin = 'pull';
     else if (lay === 'idw') document.documentElement.dataset.skin = 'emerald';
     else document.documentElement.removeAttribute('data-skin');
+    /* The IDW skin sets --surface/--tint and the whole era ramp at a higher
+       specificity than the Paper swatches and Era-hue schemes, so those two
+       controls cannot take effect here. Hide them rather than leave dead
+       controls on screen; they still work on the tabbed and classic shells. */
+    var dead = (lay === 'idw');
+    var pr = document.getElementById('paperRow'); if (pr) pr.hidden = dead;
+    var eh = document.getElementById('eraHueWrap'); if (eh) eh.hidden = dead;
     document.getElementById('tabs').hidden = !tabs;
     document.getElementById('phead').hidden = !tabs;
     var tb = document.querySelector('.topbar');
@@ -1170,7 +1177,8 @@
     seg(document.getElementById('segRefresh'),
       [['month', 'monthly'], ['quarter', 'quarterly'], ['year', 'yearly'], ['off', 'off']],
       function () { return state.settings.refreshEvery || 'quarter'; },
-      function (v) { state.settings.refreshEvery = v; save(K.settings, state.settings); });
+      function (v) { state.settings.refreshEvery = v; state.settings.refreshSeen = Date.now();
+                     save(K.settings, state.settings); });
     seg(document.getElementById('segPace'),
       PACE.map(function (p) { return [p[1], p[0]]; }),
       function () { return view.pace; }, function (v) { view.pace = v; });
@@ -1771,6 +1779,34 @@
     if (!actionLabel) toastT = setTimeout(function () { t.hidden = true; }, 3200);
   }
 
+  /* ---------- refresh reminder ----------
+     This franchise is still publishing, so the tracker goes stale on its own.
+     The interval setting is only worth having if something actually reads it. */
+  var REFRESH_DAYS = { month: 30, quarter: 91, year: 365 };
+  function refreshDue() {
+    var every = state.settings.refreshEvery || 'quarter';
+    if (every === 'off') return false;
+    var days = REFRESH_DAYS[every];
+    if (!days) return false;
+    var last = +(state.settings.refreshSeen || 0);
+    if (!last) {                                   // first run: start the clock
+      state.settings.refreshSeen = Date.now();
+      save(K.settings, state.settings);
+      return false;
+    }
+    return (Date.now() - last) > days * 864e5;
+  }
+  function checkRefresh() {
+    if (!refreshDue()) return;
+    var since = Math.round((Date.now() - +state.settings.refreshSeen) / 864e5);
+    toast('This list was last checked ' + since + ' days ago. New issues may have shipped.',
+      'Dismiss', function () {
+        state.settings.refreshSeen = Date.now();
+        save(K.settings, state.settings);
+        document.getElementById('toast').hidden = true;
+      });
+  }
+
   /* ---------- offline + install ---------- */
   function netState() {
     document.body.classList.toggle('offline', !navigator.onLine);
@@ -1778,6 +1814,7 @@
   window.addEventListener('online', function () { netState(); toast('Back online.'); });
   window.addEventListener('offline', function () { netState(); toast('Offline \u2014 everything still works.'); });
   netState();
+  setTimeout(checkRefresh, 1500);   // after boot, so it never competes with first paint
 
   var deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', function (e) {
