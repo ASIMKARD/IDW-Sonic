@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 14</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 15</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -911,6 +911,7 @@
   }
   /* Persistent banner: one compact line, always on screen. In 'split' progress
      mode it shows a bar per medium; otherwise a single overall bar. */
+  var MEDIA_WORD = { comic: 'read', game: 'beaten', screen: 'watched' };
   function paintBanner() {
     var b = document.getElementById('banner');
     if (!b) return;
@@ -922,14 +923,27 @@
     b.innerHTML = '';
     sets.forEach(function (c) {
       var pc = c.total ? Math.round(c.done / c.total * 100) : 0;
-      var cell = el('span', 'bcell');
-      if (c.medium) cell.appendChild(el('span', 'bico', MEDIA_ICON[c.medium]));
-      var bar = el('span', 'bbar'); var fill = el('i', ''); fill.style.width = pc + '%';
-      bar.appendChild(fill); cell.appendChild(bar);
-      cell.appendChild(el('span', 'bpct', pc + '%'));
-      cell.title = (c.medium || 'overall') + ': ' + c.done + ' of ' + c.total;
-      b.appendChild(cell);
+      var row = el('div', 'brow');
+      var bar = el('div', 'bbar'); var fill = el('i', ''); fill.style.width = pc + '%';
+      bar.appendChild(fill); row.appendChild(bar);
+      var line = el('div', 'bline');
+      var verb = c.medium ? MEDIA_WORD[c.medium] : 'done';
+      var left = el('span', 'bleft',
+        (c.medium ? MEDIA_ICON[c.medium] + ' ' : '') +
+        c.done.toLocaleString() + ' / ' + c.total.toLocaleString() + ' ' + verb);
+      var rem = el('span', 'brem', paceRemaining(c));
+      line.appendChild(left); line.appendChild(rem);
+      row.appendChild(line);
+      b.appendChild(row);
     });
+  }
+  /* uses view.pace, the same source paintPace() uses, so the two never disagree */
+  function paceRemaining(c) {
+    var left = c.total - c.done;
+    if (!left) return 'complete';
+    var weeks = left / (view.pace || 12);
+    return weeks >= 52 ? (weeks / 52).toFixed(1) + 'y left'
+         : (weeks >= 4 ? Math.round(weeks) + 'w left' : (weeks * 7).toFixed(1) + 'd left');
   }
 
   /* ---------- layout shell: 'classic' (settings dropdown) or 'tabs' (X-Men style) ---------- */
@@ -989,7 +1003,7 @@
     document.documentElement.dataset.layout = tabs ? 'tabs' : 'classic';
     // 'pull' is the X-Men Pull List look: same tab structure, different skin
     if (lay === 'pull') document.documentElement.dataset.skin = 'pull';
-    else if (lay === 'idw') document.documentElement.dataset.skin = 'emerald';
+    else if (lay === 'idw') document.documentElement.dataset.skin = 'idw';
     else document.documentElement.removeAttribute('data-skin');
     /* The IDW skin sets --surface/--tint and the whole era ramp at a higher
        specificity than the Paper swatches and Era-hue schemes, so those two

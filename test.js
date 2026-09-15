@@ -139,9 +139,9 @@ function run(){
        const bv = (tag.match(/(\d+)/) || [])[1];
        return cv && bv && cv === bv;
      })());
-  ok('emerald ramp text clears WCAG AA on its dark surface', (function () {
+  ok('idw ramp text clears WCAG AA on its dark surface', (function () {
        const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
-       const m = css.match(/html:root\[data-skin="emerald"\]\{([^}]*)\}/);
+       const m = css.match(/html:root\[data-skin="idw"\]\{([^}]*)\}/);
        if (!m) return false;
        const surf = (m[1].match(/--surface:(#[0-9A-Fa-f]{6})/) || [])[1];
        const lum = h => { const c = [1,3,5].map(i => parseInt(h.substr(i,2),16)/255)
@@ -152,16 +152,16 @@ function run(){
        const cols = m[1].match(/--e\d+-[ad]:(#[0-9A-Fa-f]{6})/g) || [];
        return cols.length > 0 && cols.every(c => cr(c.split(':')[1], surf) >= 4.5);
      })());
-  ok('emerald era ramp is flat (one colour, no per-era cycling)', (function () {
+  ok('idw era ramp is flat (one colour, no per-era cycling)', (function () {
        const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
-       const m = css.match(/html:root\[data-skin="emerald"\]\{([^}]*)\}/);
+       const m = css.match(/html:root\[data-skin="idw"\]\{([^}]*)\}/);
        if (!m) return false;
        const acc = (m[1].match(/--e\d+-a:(#[0-9A-Fa-f]{6})/g) || []).map(s => s.split(':')[1]);
        return acc.length > 1 && new Set(acc).size === 1;
      })());
-  ok('emerald filter chips have a visible border', (function () {
+  ok('idw filter chips have a visible border', (function () {
        const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
-       return /html:root\[data-skin="emerald"\] \.chip\{[^}]*border:1\.5px/.test(css);
+       return /html:root\[data-skin="idw"\] \.chip\{[^}]*border:1\.5px/.test(css);
      })());
   ok('filters survive a round trip through Reading', (function () {
        const tabs = qa('#tabs .tab');
@@ -320,7 +320,7 @@ function run(){
   const classic = segBtns.find(b => /^IDW$/i.test(b.textContent));
   classic && classic.click();
   ok('IDW option uses the tabbed shell', root.dataset.layout === 'tabs');
-  ok('IDW option sets data-skin=emerald', root.dataset.skin === 'emerald');
+  ok('IDW option sets data-skin=idw', root.dataset.skin === 'idw');
   ok('IDW skin hides the topbar (tabbed shell)', q('.topbar').hidden === true);
   ok('IDW skin keeps the tab nav', q('#tabs').hidden === false);
   ok('IDW skin keeps the progress header', q('#phead').hidden === false);

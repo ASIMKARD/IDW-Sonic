@@ -611,37 +611,61 @@ img,svg,pre,table{max-width:100%}
 :root[data-bg="5"]{--surface:#E3ECF5;--tint:#D3E1EF}
 :root[data-bg="6"]{--surface:#EAE4F2;--tint:#DED5EC}
 
-/* ---- emerald skin: the seven Chaos Emerald hues drive the era ramp ---- */
-html:root[data-skin="emerald"]{--bg:#07110E;--surface:#0E1C17;--ink:#EAF6F0;--ink-soft:#8FB3A5;--accent:#31D07A;--action:#17A2C9;--rule:#1E3A30;--gap-bg:#12241D;--gap-ink:#7A9C8D;--e0-t:#12211B;--e0-a:#3FD98A;--e0-d:#8FE3B6;--e1-t:#12211B;--e1-a:#3FD98A;--e1-d:#8FE3B6;--e2-t:#12211B;--e2-a:#3FD98A;--e2-d:#8FE3B6;--e3-t:#12211B;--e3-a:#3FD98A;--e3-d:#8FE3B6;--e4-t:#12211B;--e4-a:#3FD98A;--e4-d:#8FE3B6;--e5-t:#12211B;--e5-a:#3FD98A;--e5-d:#8FE3B6;--e6-t:#12211B;--e6-a:#3FD98A;--e6-d:#8FE3B6;--e7-t:#12211B;--e7-a:#3FD98A;--e7-d:#8FE3B6;--e8-t:#12211B;--e8-a:#3FD98A;--e8-d:#8FE3B6;--e9-t:#12211B;--e9-a:#3FD98A;--e9-d:#8FE3B6;--e10-t:#12211B;--e10-a:#3FD98A;--e10-d:#8FE3B6;--e11-t:#12211B;--e11-a:#3FD98A;--e11-d:#8FE3B6;--e12-t:#12211B;--e12-a:#3FD98A;--e12-d:#8FE3B6;--e13-t:#12211B;--e13-a:#3FD98A;--e13-d:#8FE3B6;--e14-t:#12211B;--e14-a:#3FD98A;--e14-d:#8FE3B6;--e15-t:#12211B;--e15-a:#3FD98A;--e15-d:#8FE3B6;--e16-t:#12211B;--e16-a:#3FD98A;--e16-d:#8FE3B6;--e17-t:#12211B;--e17-a:#3FD98A;--e17-d:#8FE3B6;--e18-t:#12211B;--e18-a:#3FD98A;--e18-d:#8FE3B6;--e19-t:#12211B;--e19-a:#3FD98A;--e19-d:#8FE3B6;--e20-t:#12211B;--e20-a:#3FD98A;--e20-d:#8FE3B6;--e21-t:#12211B;--e21-a:#3FD98A;--e21-d:#8FE3B6;--e22-t:#12211B;--e22-a:#3FD98A;--e22-d:#8FE3B6;--e23-t:#12211B;--e23-a:#3FD98A;--e23-d:#8FE3B6;--e24-t:#12211B;--e24-a:#3FD98A;--e24-d:#8FE3B6;--e25-t:#12211B;--e25-a:#3FD98A;--e25-d:#8FE3B6;--e26-t:#12211B;--e26-a:#3FD98A;--e26-d:#8FE3B6}
-html:root[data-skin="emerald"] .topbar{background:#050C0A;color:#EAF6F0}
-html:root[data-skin="emerald"] .row{border-color:#1E3A30}
-html:root[data-skin="emerald"] .pbar{background:rgba(49,208,122,.18)}
-html:root[data-skin="emerald"] .era-intro,html:root[data-skin="emerald"] .blurb{color:#B4D4C6}
-html:root[data-skin="emerald"] .note,html:root[data-skin="emerald"] .meta,html:root[data-skin="emerald"] .sub{color:#B4D4C6}
-html:root[data-skin="emerald"] .row{background:var(--surface);color:var(--ink)}
-html:root[data-skin="emerald"] .gap{background:var(--gap-bg);color:#C6DED3}
-html:root[data-skin="emerald"] input,html:root[data-skin="emerald"] select,html:root[data-skin="emerald"] textarea{background:#0B1713;color:var(--ink);border-color:#25473B}
-html:root[data-skin="emerald"] .filters{background:#0B1713;border-bottom:1px solid #2E5B4B}
-html:root[data-skin="emerald"] .chip{color:var(--ink);background:#16302708;border:1.5px solid #4A8570}
-html:root[data-skin="emerald"] .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#062018}
-html:root[data-skin="emerald"] .seg{border:1.5px solid #4A8570;border-radius:999px;overflow:hidden}
-html:root[data-skin="emerald"] .seg button{background:transparent;color:#B4D4C6;border-right-color:#31604F}
-html:root[data-skin="emerald"] .seg button[aria-pressed="true"]{background:var(--accent);color:#062018}
-html:root[data-skin="emerald"] .flabel{color:#CFE7DB}
-html:root[data-skin="emerald"] select,html:root[data-skin="emerald"] #search{border:1.5px solid #4A8570}
-html:root[data-skin="emerald"] .chip[aria-pressed="false"]{color:#A9CCBC}
+/* ---- idw skin: the seven Chaos Emerald hues drive the era ramp ---- */
+html:root[data-skin="idw"]{--bg:#060B16;--surface:#0C1426;--ink:#EAF2FF;--ink-soft:#8AA2C4;--accent:#F5B32A;--action:#35B8F5;--rule:#1E2E4A;--gap-bg:#101B30;--gap-ink:#7C93B5;--e0-t:#101D33;--e0-a:#35B8F5;--e0-d:#8FD4FF;--e1-t:#101D33;--e1-a:#35B8F5;--e1-d:#8FD4FF;--e2-t:#101D33;--e2-a:#35B8F5;--e2-d:#8FD4FF;--e3-t:#101D33;--e3-a:#35B8F5;--e3-d:#8FD4FF;--e4-t:#101D33;--e4-a:#35B8F5;--e4-d:#8FD4FF;--e5-t:#101D33;--e5-a:#35B8F5;--e5-d:#8FD4FF;--e6-t:#101D33;--e6-a:#35B8F5;--e6-d:#8FD4FF;--e7-t:#101D33;--e7-a:#35B8F5;--e7-d:#8FD4FF;--e8-t:#101D33;--e8-a:#35B8F5;--e8-d:#8FD4FF;--e9-t:#101D33;--e9-a:#35B8F5;--e9-d:#8FD4FF;--e10-t:#101D33;--e10-a:#35B8F5;--e10-d:#8FD4FF;--e11-t:#101D33;--e11-a:#35B8F5;--e11-d:#8FD4FF;--e12-t:#101D33;--e12-a:#35B8F5;--e12-d:#8FD4FF;--e13-t:#101D33;--e13-a:#35B8F5;--e13-d:#8FD4FF;--e14-t:#101D33;--e14-a:#35B8F5;--e14-d:#8FD4FF;--e15-t:#101D33;--e15-a:#35B8F5;--e15-d:#8FD4FF;--e16-t:#101D33;--e16-a:#35B8F5;--e16-d:#8FD4FF;--e17-t:#101D33;--e17-a:#35B8F5;--e17-d:#8FD4FF;--e18-t:#101D33;--e18-a:#35B8F5;--e18-d:#8FD4FF;--e19-t:#101D33;--e19-a:#35B8F5;--e19-d:#8FD4FF;--e20-t:#101D33;--e20-a:#35B8F5;--e20-d:#8FD4FF;--e21-t:#101D33;--e21-a:#35B8F5;--e21-d:#8FD4FF;--e22-t:#101D33;--e22-a:#35B8F5;--e22-d:#8FD4FF;--e23-t:#101D33;--e23-a:#35B8F5;--e23-d:#8FD4FF;--e24-t:#101D33;--e24-a:#35B8F5;--e24-d:#8FD4FF;--e25-t:#101D33;--e25-a:#35B8F5;--e25-d:#8FD4FF;--e26-t:#101D33;--e26-a:#35B8F5;--e26-d:#8FD4FF}
 
-/* ---------- persistent banner: one sticky line, X-Men-plain ---------- */
-.banner{position:sticky;top:0;z-index:30;display:flex;gap:16px;align-items:center;
- padding:6px 14px;background:var(--surface);border-bottom:1px solid var(--rule);
- font-family:var(--mark);font-size:11.5px;color:var(--ink-soft)}
+
+
+/* ---------- persistent banner: the Pull List header block ---------- */
+.banner{position:sticky;top:0;z-index:30;display:flex;flex-direction:column;gap:9px;
+ padding:11px 14px 10px;background:var(--surface);border-bottom:2px solid var(--ink)}
 .banner[hidden]{display:none}
-.bcell{display:flex;align-items:center;gap:6px;flex:1 1 0;min-width:0}
-.bico{flex:none;font-size:12px}
-.bbar{flex:1 1 auto;height:4px;min-width:24px;background:var(--rule);border-radius:2px;overflow:hidden}
-.bbar i{display:block;height:100%;background:var(--action)}
-.bpct{flex:none;min-width:30px;text-align:right;font-variant-numeric:tabular-nums}
+.brow{display:flex;flex-direction:column;gap:5px}
+.bbar{height:9px;background:var(--rule);border-radius:999px;overflow:hidden}
+.bbar i{display:block;height:100%;background:var(--action);border-radius:999px;transition:width .2s}
+.bline{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+ font-family:var(--mark);font-size:13px;color:var(--ink-soft)}
+.bleft{color:var(--ink)}
+.brem{white-space:nowrap}
 :root[data-layout="tabs"] .banner{top:var(--hud-h)}
-html:root[data-skin="emerald"] .banner{background:#0B1713;border-bottom-color:#2E5B4B;color:#A9CCBC}
-html:root[data-skin="emerald"] .bbar{background:#1E3A30}
-html:root[data-skin="emerald"] .bbar i{background:var(--accent)}
+
+/* ---------- IDW skin: cobalt, gold and speed ----------
+   Its own identity, not the Archie palette: navy field, cobalt bands, a gold
+   edge doing the work Archie's yellow stripe does, and an angled cut for speed. */
+html:root[data-skin="idw"] .topbar{background:#05090F;color:var(--ink)}
+html:root[data-skin="idw"] .filters{background:#080F1C;border-bottom:1px solid #24395C}
+html:root[data-skin="idw"] .chip{color:var(--ink);background:transparent;border:1.5px solid #3C5B8C}
+html:root[data-skin="idw"] .chip[aria-pressed="true"]{background:var(--action);border-color:var(--action);color:#04121F}
+html:root[data-skin="idw"] .chip[aria-pressed="false"]{color:#9DB6D6}
+html:root[data-skin="idw"] .seg{border:1.5px solid #3C5B8C;border-radius:999px;overflow:hidden}
+html:root[data-skin="idw"] .seg button{background:transparent;color:#B9CFEA;border-right-color:#24395C}
+html:root[data-skin="idw"] .seg button[aria-pressed="true"]{background:var(--action);color:#04121F}
+html:root[data-skin="idw"] .flabel{color:#CBDDF3}
+html:root[data-skin="idw"] select,html:root[data-skin="idw"] #search{border:1.5px solid #3C5B8C}
+html:root[data-skin="idw"] .row{background:var(--surface);color:var(--ink)}
+html:root[data-skin="idw"] .gap{background:var(--gap-bg);color:#B7CCE6}
+html:root[data-skin="idw"] .era-intro,html:root[data-skin="idw"] .blurb,
+html:root[data-skin="idw"] .note,html:root[data-skin="idw"] .subnote{color:#A9C2E0}
+html:root[data-skin="idw"] input,html:root[data-skin="idw"] textarea{background:#091324;color:var(--ink);border-color:#3C5B8C}
+html:root[data-skin="idw"] .b.bm,html:root[data-skin="idw"] .b.rv{background:#0F1B30;border-color:#3C5B8C;color:#B9CFEA}
+html:root[data-skin="idw"] .banner{background:#080F1C;border-bottom:2px solid var(--accent)}
+html:root[data-skin="idw"] .bbar{background:#1B2B47}
+html:root[data-skin="idw"] .bbar i{background:linear-gradient(90deg,var(--action),var(--accent))}
+
+/* period bands: big cobalt slabs with a gold speed-cut on the right */
+html:root[data-skin="idw"] .period-head{position:relative;overflow:hidden;
+ background:linear-gradient(100deg,#1B6FB5 0%,#2A93DC 55%,#35B8F5 100%);color:#04121F;
+ border:0;border-radius:10px;padding:16px 62px 16px 16px;margin-top:14px}
+html:root[data-skin="idw"] .period-head::after{content:"";position:absolute;top:-10%;right:16px;
+ width:16px;height:120%;background:var(--accent);transform:skewX(-18deg)}
+html:root[data-skin="idw"] .period-head::before{content:"";position:absolute;top:-10%;right:40px;
+ width:6px;height:120%;background:var(--accent);opacity:.55;transform:skewX(-18deg)}
+html:root[data-skin="idw"] .pname{font-family:var(--display);letter-spacing:.02em;color:#04121F}
+html:root[data-skin="idw"] .pyears{color:#0A2C47;opacity:.8}
+html:root[data-skin="idw"] .period-head .n,html:root[data-skin="idw"] .period-head .chev{color:#04121F}
+
+/* era heads: quieter, so the bands stay the loud layer */
+html:root[data-skin="idw"] .era-head{background:#132542;color:var(--ink);
+ border-left:4px solid var(--accent);border-radius:6px;padding-left:12px}
+html:root[data-skin="idw"] .era-head h2{color:#DCEBFF}
+html:root[data-skin="idw"] .era-head .n{color:#93AECE}
