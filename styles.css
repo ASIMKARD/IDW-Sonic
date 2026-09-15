@@ -371,11 +371,11 @@ img,svg,pre,table{max-width:100%}
    off-screen; contain-intrinsic-size(auto N) reserves an estimated height
    and then remembers the real one, keeping the scrollbar stable. Browsers
    without support simply ignore these lines. */
-.row,.arc-head,.era-head,.blurb{content-visibility:auto}
-.row{contain-intrinsic-size:auto 62px}
-.arc-head{contain-intrinsic-size:auto 42px}
-.era-head{contain-intrinsic-size:auto 46px}
-.blurb{contain-intrinsic-size:auto 96px}
+.row{content-visibility:auto}   /* NOT on .era-head: it is position:sticky, and the pair reserves phantom height */
+.row{contain-intrinsic-size:auto 58px}
+
+
+
 
 /* ---------- period bands (seven story-shift super-eras) ---------- */
 .period{border-bottom:2px solid var(--rule)}
@@ -627,7 +627,7 @@ html:root[data-skin="idw"]{--bg:#060B16;--surface:#0C1426;--ink:#EAF2FF;--ink-so
  font-family:var(--mark);font-size:13px;color:var(--ink-soft)}
 .bleft{color:var(--ink)}
 .brem{white-space:nowrap}
-:root[data-layout="tabs"] .banner{top:var(--hud-h)}
+
 
 /* ---------- IDW skin: cobalt, gold and speed ----------
    Its own identity, not the Archie palette: navy field, cobalt bands, a gold
@@ -655,7 +655,7 @@ html:root[data-skin="idw"] .bbar i{background:linear-gradient(90deg,var(--action
 /* period bands: big cobalt slabs with a gold speed-cut on the right */
 html:root[data-skin="idw"] .period-head{position:relative;overflow:hidden;
  background:linear-gradient(100deg,#1B6FB5 0%,#2A93DC 55%,#35B8F5 100%);color:#04121F;
- border:0;border-radius:10px;padding:16px 62px 16px 16px;margin-top:14px}
+ border:0;border-radius:10px;padding:13px 62px 13px 16px;margin-top:6px}
 html:root[data-skin="idw"] .period-head::after{content:"";position:absolute;top:-10%;right:16px;
  width:16px;height:120%;background:var(--accent);transform:skewX(-18deg)}
 html:root[data-skin="idw"] .period-head::before{content:"";position:absolute;top:-10%;right:40px;
@@ -669,3 +669,25 @@ html:root[data-skin="idw"] .era-head{background:#132542;color:var(--ink);
  border-left:4px solid var(--accent);border-radius:6px;padding-left:12px}
 html:root[data-skin="idw"] .era-head h2{color:#DCEBFF}
 html:root[data-skin="idw"] .era-head .n{color:#93AECE}
+
+/* keep the bands tight together: no dead space at the end of a period body */
+html:root[data-skin="idw"] .period{border-bottom:0;margin:0 0 6px}
+html:root[data-skin="idw"] .period-body{padding-bottom:0}
+html:root[data-skin="idw"] .period-body > .era:last-child{margin-bottom:0}
+html:root[data-skin="idw"] .era{margin:4px 0 0}
+html:root[data-skin="idw"] .era-body{padding-bottom:0}
+html:root[data-skin="idw"] .period-intro{background:transparent;color:#A9C2E0;padding:8px 14px}
+
+/* tabs stay on screen with the banner, as the X-Men build does */
+
+
+/* tabs pin to the very top and the banner sits directly under them, so both
+   stay on screen once the header has scrolled away (the X-Men arrangement) */
+:root[data-layout="tabs"] .tabs{top:0;z-index:34}
+:root[data-layout="tabs"] .banner{top:var(--tabs-h,44px);z-index:33}
+:root[data-layout="tabs"] .banner{top:var(--tabs-h,44px);z-index:33}
+:root[data-layout="tabs"] .filters{top:var(--stack-h,44px)}
+:root[data-layout="tabs"] .period-head{top:var(--stack-h,44px)}
+:root[data-layout="tabs"] .era-head{top:calc(var(--stack-h,44px) + 40px)}
+:root[data-layout="tabs"] .period .era-head{top:calc(var(--stack-h,44px) + 44px)}
+:root[data-layout="tabs"] .mini{top:var(--stack-h,44px)}

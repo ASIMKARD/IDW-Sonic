@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 15</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 16</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -42,6 +42,7 @@
   <button class="tab" id="tabReviews"   type="button" role="tab" aria-selected="false" data-pane="paneReviews">Reviews</button>
   <button class="tab" id="tabSettings"  type="button" role="tab" aria-selected="false" data-pane="panel">Settings</button>
 </nav>
+<div class="banner" id="banner" hidden aria-label="Progress"></div>
 
 
 <section class="filters" id="filters" hidden aria-label="Filters">
@@ -138,7 +139,6 @@
   <div id="aboutBox" hidden style="font-size:13px;max-width:78ch;color:var(--ink-soft)"></div>
 </section>
 <div class="mini" id="mini"><i style="width:0%"></i></div>
-<div class="banner" id="banner" hidden aria-label="Progress"></div>
 
 <div class="toast" id="toast" hidden role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastAct" type="button" hidden></button></div>
 
@@ -912,6 +912,19 @@
   /* Persistent banner: one compact line, always on screen. In 'split' progress
      mode it shows a bar per medium; otherwise a single overall bar. */
   var MEDIA_WORD = { comic: 'read', game: 'beaten', screen: 'watched' };
+  /* The sticky offsets were hardcoded, so adding a second sticky bar pushed
+     everything out of alignment. Measure the real stack instead. */
+  function measureStack() {
+    var t = document.getElementById('tabs');
+    var b = document.getElementById('banner');
+    var th = (t && !t.hidden) ? t.offsetHeight : 0;
+    var bh = (b && !b.hidden) ? b.offsetHeight : 0;
+    var r = document.documentElement;
+    r.style.setProperty('--tabs-h', th + 'px');
+    r.style.setProperty('--stack-h', (th + bh) + 'px');
+  }
+  window.addEventListener('resize', measureStack);
+
   function paintBanner() {
     var b = document.getElementById('banner');
     if (!b) return;
@@ -936,6 +949,7 @@
       row.appendChild(line);
       b.appendChild(row);
     });
+    measureStack();
   }
   /* uses view.pace, the same source paintPace() uses, so the two never disagree */
   function paceRemaining(c) {
@@ -1828,6 +1842,8 @@
   window.addEventListener('online', function () { netState(); toast('Back online.'); });
   window.addEventListener('offline', function () { netState(); toast('Offline \u2014 everything still works.'); });
   netState();
+  measureStack();
+  setTimeout(measureStack, 300);
   setTimeout(checkRefresh, 1500);   // after boot, so it never competes with first paint
 
   var deferredPrompt = null;
