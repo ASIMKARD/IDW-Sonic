@@ -111,7 +111,7 @@ main{max-width:960px;margin:0 auto;padding:0 0 40vh}
 .row[data-s="skip"] .mark{color:var(--ink-soft);opacity:.55}
 .row[data-s="read"] .title,.row[data-s="skip"] .title{opacity:.55}
 .row[data-s="skip"] .title{text-decoration:line-through}
-.title{font-weight:500;font-size:15.5px;flex:0 1 auto;min-width:0;overflow-wrap:anywhere}
+.title{font-weight:500;font-size:var(--fs);flex:0 1 auto;min-width:0;overflow-wrap:anywhere}
 .arclab{font-size:13px;color:var(--ink-soft);flex:1;min-width:0;overflow:hidden;
  text-overflow:ellipsis;white-space:nowrap}
 .badges{display:flex;gap:5px;align-items:center;flex:0 1 auto;flex-wrap:wrap;min-width:0}

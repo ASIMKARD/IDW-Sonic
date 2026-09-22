@@ -179,6 +179,18 @@ function run(){
        const h = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
        return /function refreshDue/.test(h) && /REFRESH_DAYS/.test(h) && /setTimeout\(checkRefresh/.test(h);
      })());
+  ok('title follows the text-size setting (not hardcoded)', (function () {
+       const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
+       return /\.title\{[^}]*font-size:var\(--fs\)/.test(css);
+     })());
+  ok('button size reads and writes the same store applyView uses', (function () {
+       const h = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
+       return /function \(\) \{ return view\.tap \|\| 'standard'; \}/.test(h) && /view\.tap = v; saveView\(\)/.test(h);
+     })());
+  ok('pending writes flush when the app is hidden', (function () {
+       const h = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
+       return /addEventListener\('pagehide', flushNow\)/.test(h) && /visibilityState === 'hidden'/.test(h);
+     })());
   ok('persistent banner toggle exists', !!q('#bannerChip'));
   ok('persistent banner is off by default', q('#banner').hidden === true);
   ok('reading tab labels vary by medium', (function () {

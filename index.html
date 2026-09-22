@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 17</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 18</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -265,6 +265,14 @@
       catch (e) { console.warn('save failed', key, e); }
     });
   }
+  /* Writes are debounced 400ms. Without this, a mark or setting changed just
+     before the app is closed or swiped away never reaches storage. iOS fires
+     pagehide / visibilitychange reliably when an installed PWA is backgrounded. */
+  function flushNow() { if (timer) { clearTimeout(timer); flush(); } }
+  window.addEventListener('pagehide', flushNow);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') flushNow();
+  });
   function save(key, val) {
     pending[key] = val;
     if (timer) clearTimeout(timer);
@@ -1193,9 +1201,8 @@
        40px touch minimum, large goes to 48px. Checklist controls only. */
     seg(document.getElementById('segTap'),
       [['compact', 'compact'], ['standard', 'standard'], ['large', 'large']],
-      function () { return state.settings.tap || 'standard'; },
-      function (v) { state.settings.tap = v; save(K.settings, state.settings);
-                     document.documentElement.dataset.tap = v; });
+      function () { return view.tap || 'standard'; },
+      function (v) { view.tap = v; saveView(); document.documentElement.dataset.tap = v; });
     seg(document.getElementById('segProgress'),
       [['shared', 'combined'], ['split', 'per medium']],
       function () { return state.settings.progressMode || 'shared'; },
