@@ -191,6 +191,14 @@ function run(){
        const h = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
        return /addEventListener\('pagehide', flushNow\)/.test(h) && /visibilityState === 'hidden'/.test(h);
      })());
+  ok('no function is defined twice (the later copy silently wins)', (function () {
+       const h = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
+       const names = (h.match(/\n  function (\w+)\(/g) || []).map(s => s.trim().slice(9, -1));
+       const seen = {}, dup = names.filter(n => (seen[n] = (seen[n] || 0) + 1) === 2);
+       if (dup.length) console.log('   duplicated:', dup.join(', '));
+       return dup.length === 0;
+     })());
+  ok('bookmarks open a list, not a jump to the first one', !!q('#bmBox'));
   ok('persistent banner toggle exists', !!q('#bannerChip'));
   ok('persistent banner is off by default', q('#banner').hidden === true);
   ok('reading tab labels vary by medium', (function () {

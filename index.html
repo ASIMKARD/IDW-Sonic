@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 18</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 19</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -137,6 +137,7 @@
     <button class="linkbtn" id="clearBtn" type="button">clear all progress</button></div>
   <div class="sync" id="syncBox" hidden></div>
   <div id="aboutBox" hidden style="font-size:13px;max-width:78ch;color:var(--ink-soft)"></div>
+  <div class="bmlist" id="bmBox" hidden></div>
 </section>
 <div class="mini" id="mini"><i style="width:0%"></i></div>
 
@@ -594,7 +595,7 @@
         var i = bookmarks.indexOf(it[0]);
         if (i === -1) bookmarks.push(it[0]); else bookmarks.splice(i, 1);
         b.setAttribute('aria-pressed', i === -1 ? 'true' : 'false');
-        saveProgress();
+        saveProgress(); paintBookmarks();
         return;
       }
       if (act === 'rv') { reviewEditor(row, it); return; }
@@ -1062,32 +1063,8 @@
     }
   }
 
-  function switchTab(pane) {
-    if (PANES.indexOf(pane) === -1) pane = 'app';
-    state.settings.tab = pane;
-    PANES.forEach(function (p) {
-      var n = document.getElementById(p);
-      if (n) n.hidden = (p !== pane);
-    });
-    document.querySelectorAll('#tabs .tab').forEach(function (b) {
-      b.setAttribute('aria-selected', b.dataset.pane === pane ? 'true' : 'false');
-    });
-    var fb = document.getElementById('filterBtn');
-    if (fb) fb.hidden = (pane !== 'app');
-    if (pane === 'paneReading') renderReading();
-    if (pane === 'paneReviews') renderReviews();
-    if (pane === 'panel') paintPace();
-    save(K.settings, state.settings);
-  }
+  /* (a duplicate switchTab(pane) used to live here; the later definition is the live one) */
 
-  function jumpToIssue(k) {
-    if (isTabbed()) switchTab('app');
-    setTimeout(function () {
-      var n = document.querySelector('.row[data-k="' + k + '"]');
-      if (n) { n.scrollIntoView({ block: 'center' }); flash(n); }
-      else toast('That issue is hidden by the current filters.');
-    }, 30);
-  }
 
 
   /* ---------- Reading: focused one-issue stepper ---------- */
@@ -1443,11 +1420,12 @@
       }
     });
 
+    /* Bookmarks: a real list. It used to jump to bookmarks[0] only, so every
+       bookmark after the first was unreachable. */
     document.getElementById('bmBtn').addEventListener('click', function () {
-      if (!bookmarks.length) { alert('No bookmarks yet. Tap the \u2606 on any issue.'); return; }
-      var next = bookmarks[0];
-      var row = document.querySelector('.row[data-k="' + next + '"]');
-      if (row) { row.scrollIntoView({ block: 'center' }); flash(row); }
+      var box = document.getElementById('bmBox');
+      box.hidden = !box.hidden;
+      if (!box.hidden) paintBookmarks();
     });
 
     document.getElementById('syncBtn').addEventListener('click', openSync);
@@ -1470,6 +1448,90 @@
       }
       alert('Nothing unread in the current view.');
     });
+  }
+
+  var ISS_BY_KEY = null;
+  function issueByKey(k) {
+    if (!ISS_BY_KEY) { ISS_BY_KEY = {}; D.issues.forEach(function (it) { ISS_BY_KEY[it[0]] = it; }); }
+    return ISS_BY_KEY[k] || null;   // null, matching the template original callers expect
+  }
+  function paintBookmarks() {
+    var box = document.getElementById('bmBox');
+    if (!box || box.hidden) return;
+    box.innerHTML = '';
+    var IP = D.issuePeriod || [], POS = {};
+    D.issues.forEach(function (it, i) { POS[it[0]] = i; });
+    var list = bookmarks.map(issueByKey).filter(Boolean).sort(function (a, b) {
+      var pa = IP[POS[a[0]]] || 0, pb = IP[POS[b[0]]] || 0;       // band first, as displayed
+      return pa !== pb ? pa - pb : a[0] - b[0];
+    });
+    if (!list.length) {
+      box.appendChild(el('p', 'bmempty', 'No bookmarks yet. Tap the \u2606 on any issue to add one.'));
+      return;
+    }
+    box.appendChild(el('p', 'bmhead', list.length + ' bookmark' + (list.length === 1 ? '' : 's')));
+    list.forEach(function (it) {
+      var li = el('div', 'bmitem');
+      var st = state.progress[it[0]] || 'unread';
+      var go = el('button', 'bmgo');
+      go.type = 'button';
+      go.appendChild(el('span', 'bmico', MEDIA_ICON[medOf(it)] || ''));
+      var txt = el('span', 'bmtxt');
+      txt.appendChild(el('span', 'bmttl', it[1]));
+      txt.appendChild(el('span', 'bmst', labelFor(it, st)));
+      go.appendChild(txt);
+      go.addEventListener('click', function () { jumpToIssue(it[0]); });
+      var rm = el('button', 'bmrm', '\u2715');
+      rm.type = 'button';
+      rm.setAttribute('aria-label', 'Remove bookmark: ' + it[1]);
+      rm.addEventListener('click', function () {
+        var i = bookmarks.indexOf(it[0]);
+        if (i !== -1) bookmarks.splice(i, 1);
+        saveProgress();
+        var rb = document.querySelector('.row[data-k="' + it[0] + '"] .bm');
+        if (rb) rb.setAttribute('aria-pressed', 'false');
+        paintBookmarks();
+      });
+      li.appendChild(go); li.appendChild(rm);
+      box.appendChild(li);
+    });
+  }
+  /* go to an issue even if its band/era is collapsed or it is filtered out */
+  function jumpToIssue(k) {
+    if (typeof switchTab === 'function') switchTab('app');
+    var sel = '.row[data-k="' + k + '"]';
+    if (!document.querySelector(sel)) { toast('That issue is hidden by your current filters.'); return; }
+    /* Expand OUTERMOST first, re-finding the row after every click: opening a
+       section can re-render the list, which detaches any node we were holding. */
+    for (var pass = 0; pass < 6; pass++) {
+      var r0 = document.querySelector(sel);
+      if (!r0) break;
+      var closed = null, n = r0.parentElement;
+      while (n && n !== document.body) {
+        var ph = n.previousElementSibling;
+        if (n.hidden && ph && /period-head|era-head|arc-head/.test(ph.className)) closed = ph;  // keep the outermost
+        n = n.parentElement;
+      }
+      if (!closed) break;
+      closed.click();
+    }
+    /* Rows off-screen use content-visibility with an ESTIMATED height, so the
+       first measurement is wrong: rows above the target grow as they paint and
+       push it down. Re-measure and correct until it stops moving. */
+    var tries = 0;
+    (function settle() {
+      var r = document.querySelector('.row[data-k="' + k + '"]');
+      if (!r) return;
+      var stack = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stack-h')) || 0;
+      var want = stack + (window.innerHeight - stack) / 3;
+      var off = r.getBoundingClientRect().top - want;
+      if (Math.abs(off) > 4 && tries++ < 8) {
+        window.scrollTo(0, Math.max(0, window.scrollY + off));
+        requestAnimationFrame(function () { setTimeout(settle, 40); });
+      } else {
+        flash(r);
+      }
+    })();
   }
 
   function flash(row) {
@@ -1532,19 +1594,6 @@
     window.scrollTo(0, 0);
   }
 
-  function issueByKey(k) {
-    for (var i = 0; i < D.issues.length; i++) if (D.issues[i][0] === k) return D.issues[i];
-    return null;
-  }
-  function jumpToIssue(k) {
-    switchTab('app');
-    setTimeout(function () {
-      var n = document.querySelector('[data-k="' + k + '"]');
-      if (n) { n.scrollIntoView({ block: 'center' }); n.classList.add('flash');
-               setTimeout(function () { n.classList.remove('flash'); }, 1400); }
-      else { toast('That issue is hidden by the current filters.'); }
-    }, 60);
-  }
   function miniRow(it, extra) {
     var b = el('button', 'mini-row');
     b.type = 'button';
