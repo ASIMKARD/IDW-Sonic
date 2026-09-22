@@ -683,11 +683,16 @@ html:root[data-skin="idw"] .period-intro{background:transparent;color:#A9C2E0;pa
 
 /* tabs pin to the very top and the banner sits directly under them, so both
    stay on screen once the header has scrolled away (the X-Men arrangement) */
-:root[data-layout="tabs"] .tabs{top:0;z-index:34}
-:root[data-layout="tabs"] .banner{top:var(--tabs-h,44px);z-index:33}
-:root[data-layout="tabs"] .banner{top:var(--tabs-h,44px);z-index:33}
-:root[data-layout="tabs"] .filters{top:var(--stack-h,44px)}
-:root[data-layout="tabs"] .period-head{top:var(--stack-h,44px)}
-:root[data-layout="tabs"] .era-head{top:calc(var(--stack-h,44px) + 40px)}
-:root[data-layout="tabs"] .period .era-head{top:calc(var(--stack-h,44px) + 44px)}
-:root[data-layout="tabs"] .mini{top:var(--stack-h,44px)}
+
+/* ---- persistent tabs + banner (the X-Men arrangement) ----
+   The tabbed shell sets tabs, bands, era heads and filters all to
+   position:static in one grouped rule. Re-enable sticky for the tabs and the
+   banner ONLY, and pin everything else explicitly to top:auto so no offset can
+   shift a relatively-positioned band (that shift was the gap + overlap bug). */
+html:root[data-layout="tabs"] .tabs{position:sticky;top:0;z-index:34}
+html:root[data-layout="tabs"] .banner{position:sticky;top:var(--tabs-h,38px);z-index:33}
+html:root[data-layout="tabs"] .period-head,
+html:root[data-layout="tabs"] .era-head,
+html:root[data-layout="tabs"] .arc-head,
+html:root[data-layout="tabs"] .filters,
+html:root[data-layout="tabs"] .mini{top:auto}
