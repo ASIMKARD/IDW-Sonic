@@ -16,7 +16,7 @@ body{margin:0;background:var(--bg);color:var(--ink);
  font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:var(--fs);line-height:1.45;
  -webkit-font-smoothing:antialiased}
 :root{
- --fs:15.5px; --dens:13px; --radius:6px;
+ --fs:15.5px; --dens:10px; --radius:6px;
  --mark:'IBM Plex Mono',ui-monospace,monospace;
 
  --bg:#F4F1EA;--surface:#FFFFFF;--ink:#0E1526;--ink-soft:#4A5568;
@@ -102,7 +102,7 @@ main{max-width:960px;margin:0 auto;padding:0 0 40vh}
 /* ---------- rows ---------- */
 .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:var(--dens) 14px;background:var(--tint);
  border-left:4px solid var(--acc);border-top:1px solid rgba(0,0,0,.055);position:relative}
-.mark{font-family:var(--mark);font-size:19px;width:40px;min-height:40px;flex:none;display:grid;
+.mark{font-family:var(--mark);font-size:16px;width:32px;min-height:32px;flex:none;display:grid;
  place-items:center;background:none;border:0;cursor:pointer;color:var(--ink-soft);
  border-radius:var(--radius);padding:0}
 .mark:hover{background:rgba(0,0,0,.06)}
@@ -118,10 +118,10 @@ main{max-width:960px;margin:0 auto;padding:0 0 40vh}
 .b{font-family:var(--mark);font-size:11.5px;padding:3px 7px;border-radius:3px;white-space:nowrap;
  border:1px solid transparent;background:none;cursor:default;color:var(--ink-soft)}
 .b.core{background:var(--accent);color:#fff;font-weight:500}
-.b.note,.b.bm,.b.rv,.b.mu{min-height:40px;min-width:40px;padding:0 11px;
+.b.note,.b.bm,.b.rv,.b.mu{min-height:32px;min-width:32px;padding:0 9px;
  display:inline-flex;align-items:center;justify-content:center}
 /* the glyph buttons need a visible box, or a 40px tap area reads as a tiny icon */
-.b.bm,.b.rv{font-size:19px;line-height:1;border-color:var(--rule);background:var(--surface);color:var(--ink-soft)}
+.b.bm,.b.rv{font-size:16px;line-height:1;border-color:var(--rule);background:var(--surface);color:var(--ink-soft)}
 .b.bm:hover,.b.rv:hover{border-color:var(--action);color:var(--action)}
 .b.note,.b.mu{font-size:13px}
 .b.note{border-color:var(--acc);color:var(--deep);cursor:pointer}
@@ -201,10 +201,10 @@ mark{background:var(--accent);color:#fff;border-radius:2px;padding:0 2px}
 :root[data-tap="compact"] .b.note,:root[data-tap="compact"] .b.bm,:root[data-tap="compact"] .b.rv,:root[data-tap="compact"] .b.mu{min-height:0;min-width:0;padding:1px 6px;font-size:10.5px}
 :root[data-tap="compact"] .b.bm,:root[data-tap="compact"] .b.rv{background:none;border-color:transparent;font-size:12px}
 :root[data-tap="compact"] .row{--dens:9px}
-:root[data-tap="large"] .mark{width:48px;min-height:48px;font-size:21px}
-:root[data-tap="large"] .b.note,:root[data-tap="large"] .b.bm,:root[data-tap="large"] .b.rv,:root[data-tap="large"] .b.mu{min-height:48px;min-width:48px}
+:root[data-tap="large"] .mark{width:44px;min-height:44px;font-size:20px}
+:root[data-tap="large"] .b.note,:root[data-tap="large"] .b.bm,:root[data-tap="large"] .b.rv,:root[data-tap="large"] .b.mu{min-height:44px;min-width:44px}
 :root[data-tap="large"] .b.bm,:root[data-tap="large"] .b.rv{font-size:22px}
-:root[data-tap="large"] .row{--dens:17px}
+:root[data-tap="large"] .row{--dens:14px}
 
 :root[data-badges="0"] .badges{display:none}
 :root[data-table="1"] .blurb,:root[data-table="1"] .era-intro{display:none}
@@ -363,16 +363,10 @@ img,svg,pre,table{max-width:100%}
 :root[data-layout="classic"] #panel{padding:0;max-width:none;margin:0}
 
 
-/* ---------- long-list performance ----------
-   4,683 rows plus ~5,000 sticky era/arc headers (the interleaved reading
-   order re-enters eras constantly, so a header is emitted at every
-   transition) meant the whole list was laid out and painted on every
-   frame. content-visibility:auto lets the engine skip everything
-   off-screen; contain-intrinsic-size(auto N) reserves an estimated height
-   and then remembers the real one, keeping the scrollbar stable. Browsers
-   without support simply ignore these lines. */
-.row{content-visibility:auto}   /* NOT on .era-head: it is position:sticky, and the pair reserves phantom height */
-.row{contain-intrinsic-size:auto 58px}
+/* Rows are rendered normally. content-visibility:auto was used here to skip
+   off-screen rows, but its contain-intrinsic-size estimate left unpainted gaps
+   on iOS and mis-positioned scroll targets. At this row count it is not worth
+   the trouble. */
 
 
 
@@ -731,4 +725,3 @@ html:root[data-skin="idw"] .bmgo,html:root[data-skin="idw"] .bmrm{background:#0F
    costing a third of the width; the title needs that space far more */
 :root[data-table="1"] .arclab{display:none}
 :root[data-table="1"] .b.mu{max-width:64px;overflow:hidden}
-:root[data-table="1"] .row{contain-intrinsic-size:auto 34px}

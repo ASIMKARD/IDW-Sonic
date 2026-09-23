@@ -212,10 +212,13 @@ function run(){
        const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
        return /:root\[data-tap="compact"\] \.mark\{width:26px/.test(css);
      })());
-  ok('glyph buttons meet the 40px touch minimum', (function () {
+  ok('glyph buttons are usable at standard and reach 44px at large', (function () {
+       // standard is deliberately compact (user preference); 'large' is the
+       // option that meets the 44px accessibility guideline.
        const css = require('fs').readFileSync(__dirname + '/styles.css', 'utf8');
-       const m = css.match(/\.b\.note,\.b\.bm,\.b\.rv,\.b\.mu\{[^}]*min-height:(\d+)px/);
-       return m && parseInt(m[1], 10) >= 40;
+       const std = (css.match(/\.b\.note,\.b\.bm,\.b\.rv,\.b\.mu\{min-height:(\d+)px/) || [])[1];
+       const lg  = (css.match(/data-tap="large"\] \.b\.note[^{]*\{min-height:(\d+)px/) || [])[1];
+       return std >= 30 && lg >= 44;
      })());
   ok('depth chips built', qa('#depthChips .chip').length === 3);
   ok('progress mode seg has 2 options', qa('#segProgress button').length === 2);

@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 20</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 21</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -485,7 +485,13 @@
         if (arc.ti) bits.push(arc.ti);
         if (bits.length) ah.appendChild(el('span', 'arc-meta', bits.join(' \u00B7 ')));
         arcBox.appendChild(ah);
-        if (arc.b && !arcRepeat) arcBox.appendChild(el('p', 'blurb', arc.b));
+        /* Where an era holds a single arc of the same name (the game eras), the
+           arc blurb is identical to the era intro and printing both wastes a
+           screenful. Show it once. */
+        var eraIntro = (D.eras[curEra] || {}).intro || '';
+        if (arc.b && !arcRepeat && arc.b.trim() !== eraIntro.trim()) {
+          arcBox.appendChild(el('p', 'blurb', arc.b));
+        }
       }
 
       arcBox.appendChild(buildRow(it));
