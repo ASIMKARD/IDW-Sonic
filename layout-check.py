@@ -31,6 +31,17 @@ async def main():
         gaps = await pg.evaluate("""()=>{const ps=[...document.querySelectorAll('.period')];
             return ps.slice(0,-1).map((p,i)=>Math.round(ps[i+1].getBoundingClientRect().top - p.getBoundingClientRect().bottom));}""")
         ok('no large gap between bands (max %dpx)' % max(gaps), max(gaps) <= 16)
+        # table view must actually compact the list, not just trim padding
+        await pg.evaluate("""()=>{document.querySelectorAll('.period-head').forEach(h=>{const n=h.nextElementSibling;if(n&&n.hidden)h.click()});
+            document.querySelectorAll('.era-head').forEach(h=>{const n=h.nextElementSibling;if(n&&n.hidden)h.click()});}""")
+        await pg.wait_for_timeout(200)
+        normal = await pg.evaluate("()=>Math.round(document.querySelector('.row:not(.gap)').getBoundingClientRect().height)")
+        await pg.evaluate("document.getElementById('tableChip').click()"); await pg.wait_for_timeout(300)
+        table = await pg.evaluate("()=>Math.round(document.querySelector('.row:not(.gap)').getBoundingClientRect().height)")
+        wide = await pg.evaluate("()=>[...document.querySelectorAll('.row:not(.gap)')].slice(0,40).filter(r=>r.scrollWidth>r.clientWidth+1).length")
+        ok('table view at least halves row height (%dpx -> %dpx)' % (normal, table), table <= normal / 2)
+        ok('no table row overflows the screen width', wide == 0)
+        await pg.evaluate("document.getElementById('tableChip').click()")
         ok('no runtime errors', not errs)
         await b.close()
 try: asyncio.run(main())

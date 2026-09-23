@@ -713,3 +713,22 @@ html:root[data-layout="tabs"] .mini{top:auto}
  border:1px solid var(--rule);border-radius:8px;cursor:pointer}
 .bmrm:hover{color:var(--accent);border-color:var(--accent)}
 html:root[data-skin="idw"] .bmgo,html:root[data-skin="idw"] .bmrm{background:#0F1B30;border-color:#3C5B8C}
+
+/* ---------- table view: a genuine one-line-per-issue table ----------
+   The original only trimmed padding and hid blurbs, which saved ~12px of a
+   136px row: the badges and the inline note still wrapped onto their own
+   lines. Force a single non-wrapping line and let the title ellipsis. */
+:root[data-table="1"] .row{flex-wrap:nowrap;gap:8px;align-items:center;min-height:0}
+:root[data-table="1"] .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto}
+:root[data-table="1"] .subnote{display:none}
+:root[data-table="1"] .badges{flex:none;flex-wrap:nowrap;gap:3px}
+:root[data-table="1"] .b.note,:root[data-table="1"] .b.bm,
+:root[data-table="1"] .b.rv,:root[data-table="1"] .b.mu{min-height:26px;min-width:26px;
+  padding:0 6px;font-size:12px}
+:root[data-table="1"] .b.bm,:root[data-table="1"] .b.rv{font-size:14px}
+:root[data-table="1"] .mark{width:26px;min-height:26px;font-size:15px}
+/* the arc label repeats the heading immediately above every row, and it was
+   costing a third of the width; the title needs that space far more */
+:root[data-table="1"] .arclab{display:none}
+:root[data-table="1"] .b.mu{max-width:64px;overflow:hidden}
+:root[data-table="1"] .row{contain-intrinsic-size:auto 34px}
