@@ -1,16 +1,31 @@
 {
-  "name": "My Tracker — Reading Order",
-  "short_name": "My Tracker",
-  "description": "A comics reading-order tracker.",
+  "name": "IDW Sonic — Comics, Games & Shows",
+  "short_name": "IDW Sonic",
+  "description": "IDW Sonic the Hedgehog reading-order tracker — comics, games and shows, 1991-2026.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#F6F9FD",
+  "background_color": "#060B16",
   "theme_color": "#0E1526",
   "icons": [
-    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "./icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
