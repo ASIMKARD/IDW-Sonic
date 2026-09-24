@@ -725,3 +725,11 @@ html:root[data-skin="idw"] .bmgo,html:root[data-skin="idw"] .bmrm{background:#0F
    costing a third of the width; the title needs that space far more */
 :root[data-table="1"] .arclab{display:none}
 :root[data-table="1"] .b.mu{max-width:64px;overflow:hidden}
+
+/* offline readiness indicator */
+.offstate{font-family:var(--mark);font-size:12.5px;color:var(--ink-soft)}
+.offstate.good{color:#1B8A4B}
+.offstate.warn{color:#9A6B12}
+.offstate.bad{color:var(--accent)}
+html:root[data-skin="idw"] .offstate.good{color:#4FD38A}
+html:root[data-skin="idw"] .offstate.warn{color:#F5B32A}

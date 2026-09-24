@@ -31,7 +31,7 @@
 <header class="phead" id="phead" hidden>
   <h1 class="ptitle">The Pull List</h1>
   <p class="psub">Offline Edition &mdash; progress saves in this browser only, no account needed</p>
-  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 22</b></p>
+  <p class="pmeta"><span id="strapline"></span> &middot; <b id="buildtag">build 23</b></p>
   <div class="pbar2"><i id="pfill2" style="width:0%"></i></div>
   <div class="pstats"><span id="pread">0 / 0 read</span><span id="premain">&mdash;</span></div>
 </header>
@@ -135,6 +135,7 @@
     <button class="linkbtn" id="bmBtn" type="button">bookmarks</button>
     <button class="linkbtn" id="syncBtn" type="button">sync to another device</button>
     <button class="linkbtn" id="clearBtn" type="button">clear all progress</button></div>
+  <div class="frow"><span class="flabel">Offline</span><span id="offlineState" class="offstate">checking…</span></div>
   <div class="sync" id="syncBox" hidden></div>
   <div id="aboutBox" hidden style="font-size:13px;max-width:78ch;color:var(--ink-soft)"></div>
   <div class="bmlist" id="bmBox" hidden></div>
@@ -1906,7 +1907,8 @@
   netState();
   measureStack();
   setTimeout(measureStack, 300);
-  setTimeout(checkRefresh, 1500);   // after boot, so it never competes with first paint
+  setTimeout(checkRefresh, 1500);
+  setTimeout(checkOffline, 900);   // after boot, so it never competes with first paint
 
   var deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', function (e) {
@@ -1919,6 +1921,32 @@
     });
   });
   window.addEventListener('appinstalled', function () { toast('Installed.'); });
+
+  /* ---------- offline readiness ----------
+     iOS gives a home-screen web app its own service-worker registration, so
+     installing the shortcut does NOT carry Safari's offline copy across: the
+     installed app must be opened once online. Without a way to see that, the
+     first offline attempt just fails. This reports the real state. */
+  function paintOffline(msg, cls) {
+    var n = document.getElementById('offlineState');
+    if (!n) return;
+    n.textContent = msg;
+    n.className = 'offstate ' + (cls || '');
+  }
+  async function checkOffline() {
+    if (!('serviceWorker' in navigator)) { paintOffline('not supported by this browser', 'bad'); return; }
+    try {
+      var reg = await navigator.serviceWorker.getRegistration();
+      if (!reg || !reg.active) { paintOffline('not ready \u2014 stay online a moment', 'warn'); return; }
+      var names = await caches.keys();
+      var mine = names.filter(function (n) { return n.indexOf(CACHE_PREFIX) === 0; });
+      if (!mine.length) { paintOffline('not ready \u2014 stay online a moment', 'warn'); return; }
+      var c = await caches.open(mine[0]);
+      var keys = await c.keys();
+      paintOffline('ready \u2014 ' + keys.length + ' files saved, works without a connection', 'good');
+    } catch (e) { paintOffline('could not check (' + e.name + ')', 'bad'); }
+  }
+  var CACHE_PREFIX = ((D.franchise && D.franchise.key) || 'tracker');
 
   /* ---------- service worker + update flow ---------- */
   if ('serviceWorker' in navigator) {
@@ -1936,7 +1964,10 @@
             }
           });
         });
-      }).catch(function () {});
+        setTimeout(checkOffline, 1200);
+      }).catch(function (err) {
+        paintOffline('failed to install (' + (err && err.name || 'error') + ')', 'bad');
+      });
     });
   }
 })();
